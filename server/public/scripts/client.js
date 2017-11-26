@@ -6,6 +6,21 @@ function onReady() {
     console.log('JQ');
     displayTasks();
     $('#create-button').on('click', createTask)
+    $('#displayDiv').on('click', '.complete-button', completeTask)
+}
+
+function completeTask() {
+    console.log($(this).data()); // this should log {id: '7'} or whatever the id is
+    var taskId = $(this).data().id;
+    console.log('complete was clicked! The task id was', taskId);
+    
+    $.ajax({
+        method: 'PUT',
+        url: '/toDoList/' + taskId,
+        success: function(response) {
+            displayTasks();
+        }
+    })
 }
 
 function createTask() {
@@ -37,17 +52,24 @@ function displayTasks() {
                 var $newTask = $('<div class="row task"><div class="col-sm-8"><span>' + task.task + '</span></div></div>');
 
                 // create and append the create button
-                var $completeButton = $('<div class="col-sm-2"><button class="completeButton">Complete</button></div>');
+                var $completeButton = $('<div class="col-sm-2"><button class="complete-button">Complete</button></div>');
                 $completeButton.children().data('id', task.id);
                 $newTask.append($completeButton);
 
                 // create and append the save delete
-                var $deleteButton = $('<div class="col-sm-2"><button class="deleteButton">Delete</button></div>');
+                var $deleteButton = $('<div class="col-sm-2"><button class="delete-button">Delete</button></div>');
                 $deleteButton.children().data('id', task.id);
                 $newTask.append($deleteButton);
 
                 // append the new task to the DOM
                 $('#displayDiv').append($newTask);
+
+                // set task's color
+                if (task.status === 'complete') {
+                    $newTask.css('background-color', 'green');
+                } else if (task.status === 'overdue') {
+                    $newTask.css('background-color', 'red');
+                }
             }
         }
     });
