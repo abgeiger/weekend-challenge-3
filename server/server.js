@@ -4,6 +4,8 @@ var pg = require('pg');
 var bodyParser = require('body-parser');
 var port = process.env.PORT || 5000;
 
+var toDoList = require('./routes/toDoList.js')
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('server/public'));
 
@@ -17,7 +19,7 @@ var config = {
 
 var pool = new pg.Pool(config);
 
-
+app.use('/toDoList', toDoList);
 
 
 
