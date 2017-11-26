@@ -1,0 +1,11 @@
+.task {
+    background-color: grey;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 7px;
+}
+
+input {
+    border-radius: 7px;
+    width: 100%;
+}
