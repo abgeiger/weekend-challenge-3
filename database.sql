@@ -1,3 +1,5 @@
+CREATE DATABASE to_do_list;
+
 CREATE TABLE to_do_list (
     id SERIAL PRIMARY KEY,
     task VARCHAR(80),
