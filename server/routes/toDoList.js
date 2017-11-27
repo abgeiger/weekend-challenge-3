@@ -54,7 +54,7 @@ router.get('/', function (req, res) {
     });
 });
 
-router.put('/:id', function (req, res) {
+router.put('/complete/:id', function (req, res) {
     var taskId = req.params.id;
     // Attempt to connect to database
     pool.connect(function (errorConnectingToDatabase, client, done) {
@@ -66,6 +66,33 @@ router.put('/:id', function (req, res) {
             // We connected to the database!!!
             // Now, we're going to GET things from thd DB
             client.query(`UPDATE to_do_list SET status='complete'
+            WHERE id=$1;`, [taskId], function (errorMakingQuery, result) {
+                done();
+                if (errorMakingQuery) {
+                    // Query failed. Did you test it in Postico?
+                    // Log the error
+                    console.log('Error making query', errorMakingQuery);
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(200);
+                }
+            });
+        }
+    });
+});
+
+router.put('/uncomplete/:id', function (req, res) {
+    var taskId = req.params.id;
+    // Attempt to connect to database
+    pool.connect(function (errorConnectingToDatabase, client, done) {
+        if (errorConnectingToDatabase) {
+            // There was an error connecting to the database
+            console.log('Error connecting to database', errorConnectingToDatabase);
+            res.sendStatus(500);
+        } else {
+            // We connected to the database!!!
+            // Now, we're going to GET things from thd DB
+            client.query(`UPDATE to_do_list SET status='incomplete'
             WHERE id=$1;`, [taskId], function (errorMakingQuery, result) {
                 done();
                 if (errorMakingQuery) {

@@ -6,7 +6,8 @@ function onReady() {
     console.log('JQ');
     displayTasks();
     $('#create-button').on('click', createTask)
-    $('#displayDiv').on('click', '.complete-button', completeTask)
+    $('#displayDiv').on('click', '.complete-button', completeTask);
+    $('#displayDiv').on('click', '.completed-button', uncompleteTask);
 }
 
 function completeTask() {
@@ -16,11 +17,11 @@ function completeTask() {
     
     $.ajax({
         method: 'PUT',
-        url: '/toDoList/' + taskId,
+        url: '/toDoList/complete/' + taskId,
         success: function(response) {
             displayTasks();
         }
-    })
+    });
 }
 
 function createTask() {
@@ -67,10 +68,27 @@ function displayTasks() {
                 // set task's color
                 if (task.status === 'complete') {
                     $newTask.css('background-color', 'green');
+                    // $('.complete-button').last().css('background-color', 'green');
+                    $('.complete-button').last().replaceWith('<button class="completed-button">Completed</button>');
+                    $('.completed-button').last().data('id', task.id);
                 } else if (task.status === 'overdue') {
                     $newTask.css('background-color', 'red');
                 }
             }
+        }
+    });
+}
+
+function uncompleteTask() {
+    console.log($(this).data()); // this should log {id: '7'} or whatever the id is
+    var taskId = $(this).data().id;
+    console.log('uncomplete was clicked! The task id was', taskId);
+    
+    $.ajax({
+        method: 'PUT',
+        url: '/toDoList/uncomplete/' + taskId,
+        success: function(response) {
+            displayTasks();
         }
     });
 }
