@@ -8,7 +8,9 @@ function onReady() {
     $('#create-button').on('click', createTask)
     $('#displayDiv').on('click', '.complete-button', completeTask);
     $('#displayDiv').on('click', '.completed-button', uncompleteTask);
-    $('#displayDiv').on('click', '.delete-button', deleteTask);
+    $('#displayDiv').on('click', '.delete-button', deleteTaskQuestion);
+    $('#displayDiv').on('click', '.yes-button', deleteTask);
+    $('#displayDiv').on('click', '.no-button', deleteQuesionButtons);
 }
 
 function completeTask() {
@@ -43,8 +45,10 @@ function createTask() {
 }
 
 function deleteTask() {
-    console.log($(this).data());    
-    var taskId = $(this).data().id;
+    // console.log($(this).data());    
+    // var taskId = $(this).data().id;
+    console.log($(this).parent().parent().children('div:nth-child(3)').children().data());        
+    var taskId = $(this).parent().parent().children('div:nth-child(3)').children().data().id;
     console.log('delete was clicked! The task id was', taskId);
 
     $.ajax({
@@ -54,6 +58,14 @@ function deleteTask() {
             displayTasks();
         }
     });
+}
+
+function deleteTaskQuestion() {
+    $(this).parent().parent().append('<div class="col-xs-6"><span>Are you sure you want to delete?</span><button class="yes-button">Yes</button><button class="no-button">No</button></div>');
+}
+
+function deleteQuesionButtons() {
+    $(this).parent().remove();
 }
 
 function displayTasks() {
@@ -98,7 +110,7 @@ function uncompleteTask() {
     console.log($(this).data()); // this should log {id: '7'} or whatever the id is
     var taskId = $(this).data().id;
     console.log('uncomplete was clicked! The task id was', taskId);
-    
+
     $.ajax({
         method: 'PUT',
         url: '/toDoList/uncomplete/' + taskId,
