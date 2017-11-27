@@ -8,6 +8,7 @@ function onReady() {
     $('#create-button').on('click', createTask)
     $('#displayDiv').on('click', '.complete-button', completeTask);
     $('#displayDiv').on('click', '.completed-button', uncompleteTask);
+    $('#displayDiv').on('click', '.delete-button', deleteTask);
 }
 
 function completeTask() {
@@ -41,6 +42,20 @@ function createTask() {
     });
 }
 
+function deleteTask() {
+    console.log($(this).data());    
+    var taskId = $(this).data().id;
+    console.log('delete was clicked! The task id was', taskId);
+
+    $.ajax({
+        method: 'DELETE',
+        url: '/toDoList/' + taskId,
+        success: function(response) {
+            displayTasks();
+        }
+    });
+}
+
 function displayTasks() {
     $.ajax({
         method: 'GET',
@@ -50,7 +65,7 @@ function displayTasks() {
             $('#displayDiv').empty();
             for (let i = 0; i < response.length; i++) {
                 var task = response[i];
-                var $newTask = $('<div class="row task"><div class="col-sm-8"><span>' + task.task + '</span></div></div>');
+                var $newTask = $('<div class="row task"><div class="col-sm-4"><span>' + task.task + '</span></div><div class="col-sm-4"><span>' + task.due_date + '</span></div></div>');
 
                 // create and append the create button
                 var $completeButton = $('<div class="col-sm-2"><button class="complete-button">Complete</button></div>');
